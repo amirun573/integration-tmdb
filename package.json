@@ -1,0 +1,22 @@
+{
+  "name": "integration-tmdb",
+  "version": "1.0.0",
+  "description": "Integration with TMDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirun573/integration-tmdb.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amirun573/integration-tmdb/issues"
+  },
+  "homepage": "https://github.com/amirun573/integration-tmdb#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
