@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./server/index.js",
-    "pretest": "eslint ./server",
+    "pretest": "eslint ./index.js",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "rm -rf /home/git/.forever/chat.log; forever start --uid 'chat' ./server/index.js",
+    "start": "node index.js",
     "stop": "forever stop chat",
     "lint": "eslint ."
   },
