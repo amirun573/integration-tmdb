@@ -9,6 +9,7 @@ require("dotenv").config();
 const tmdb = new tmdbController();
 // Parse JSON bodies
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

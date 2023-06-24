@@ -64,29 +64,38 @@ class TMDBService {
         .then((response) => {
           const results = response.data.results;
 
-          results.map((result) => {
-            const imageUrl = baseImageTMDBUrl + result.poster_path; // Replace with the actual URL of the image
-            let buffer = null;
-            var config = {
-              method: "get",
-              url: imageUrl,
-              headers: {},
-            };
+          Promise.all(
+            results.map(async (result) => {
+              const imageUrl = baseImageTMDBUrl + result.poster_path; // Replace with the actual URL of the image
 
-            axios(config)
-              .then(function (response) {
-                buffer = JSON.stringify(response.data);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+              const fileName = result.poster_path.toString().replace("/","");
 
-            movie.movieTitle = result.title;
-            movie.description = result.overview;
-            movie.fileName = result.poster_path;
+              var config = {
+                method: "get",
+                url: imageUrl,
+                headers: {},
+              };
 
-            saveMovie.push(movie);
-          });
+              await axios(config)
+                .then(async function (response) {
+                  let buffer = JSON.stringify(response.data);
+
+                  const s3 = await awsService.saveImage({ fileName, buffer });
+
+                  console.log("S3==>", s3)
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+
+
+              movie.movieTitle = result.title;
+              movie.description = result.overview;
+              movie.fileName = result.poster_path;
+
+              saveMovie.push(movie);
+            })
+          );
         })
         .catch((error) => {
           throw {
