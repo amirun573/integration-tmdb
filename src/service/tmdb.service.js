@@ -1,10 +1,17 @@
 const axios = require("axios");
 const { response } = require("express");
-const tmdbUrl = "https://api.themoviedb.org/3/";
 const AuthService = require("./auth.service");
-const authService = new AuthService();
 const UserService = require("./user.service");
+const fs = require("fs");
+const http = require("http");
+const https = require("https");
+const AWSService = require("./aws.service");
+
+const tmdbUrl = "https://api.themoviedb.org/3/";
+const authService = new AuthService();
 const userService = new UserService();
+const awsService = new AWSService();
+
 const statusService = {
   statusCode: 200,
   status: true,
@@ -58,6 +65,22 @@ class TMDBService {
           const results = response.data.results;
 
           results.map((result) => {
+            const imageUrl = baseImageTMDBUrl + result.poster_path; // Replace with the actual URL of the image
+            let buffer = null;
+            var config = {
+              method: "get",
+              url: imageUrl,
+              headers: {},
+            };
+
+            axios(config)
+              .then(function (response) {
+                buffer = JSON.stringify(response.data);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
             movie.movieTitle = result.title;
             movie.description = result.overview;
             movie.fileName = result.poster_path;
@@ -73,7 +96,7 @@ class TMDBService {
         });
     }
 
-    console.log(saveMovie);
+    console.log(saveMovie.length);
   }
 }
 
