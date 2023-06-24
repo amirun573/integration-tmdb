@@ -15,7 +15,9 @@ app.get("/", (req, res) => {
 });
 
 app.post("/v1/tmdb/login", async (req, res) => {
-  res.send(await tmdb.loginController(req));
+  const auth = await tmdb.loginController(req);
+
+  return res.status(auth.statusCode).json(auth).send();
 });
 
 app.use("/v1/tmdb/", (req, res, next) => {

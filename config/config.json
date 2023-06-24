@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "admin",
+    "password": "Reiki573",
+    "database": "sys",
+    "host": "database-1.cuihzfdb0jpf.ap-southeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

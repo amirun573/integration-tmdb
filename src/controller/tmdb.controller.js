@@ -28,15 +28,22 @@ class TMDBController {
 
       const { token } = value;
 
-      return await tmdb.loginService(token);
+      const user = await tmdb.loginService(token);
+
+      if (!user) {
+        response.statusCode = 400;
+        response.message = user?.message;
+
+        throw response;
+      }
+
+      return user;
     } catch (error) {
-      return response;
+      return error;
     }
   }
 
   async detailsController(req, res) {
-    const body = req.query;
-
     return await tmdb.detailsService();
   }
 }
