@@ -43,6 +43,10 @@ class TMDBController {
     }
   }
 
+  async fetchMovieDataController(req, res) {
+    return await tmdb.fetchData();
+  }
+
   async detailsController(req, res) {
     return await tmdb.detailsService();
   }

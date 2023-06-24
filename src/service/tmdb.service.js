@@ -32,6 +32,49 @@ class TMDBService {
   }
 
   async detailsService(req, res) {}
+
+  async fetchData() {
+    const baseImageTMDBUrl = "https://image.tmdb.org/t/p/w220_and_h330_face";
+    const url = tmdbUrl + "movie/top_rated?&page=";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.api_key_read}`,
+    };
+
+    const movie = {
+      movieTitle: null,
+      description: null,
+      fileName: null,
+      originalImagePath: null,
+      saveImagePath: null,
+    };
+
+    const saveMovie = [];
+
+    for (let i = 1; i <= 1; i++) {
+      await axios
+        .get(url + i.toString(), { headers })
+        .then((response) => {
+          const results = response.data.results;
+
+          results.map((result) => {
+            movie.movieTitle = result.title;
+            movie.description = result.overview;
+            movie.fileName = result.poster_path;
+
+            saveMovie.push(movie);
+          });
+        })
+        .catch((error) => {
+          throw {
+            statusCode: 400,
+            message: "Not Authenticated.",
+          };
+        });
+    }
+
+    console.log(saveMovie);
+  }
 }
 
 module.exports = TMDBService;

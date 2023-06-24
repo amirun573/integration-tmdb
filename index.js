@@ -26,6 +26,11 @@ app.use("/v1/tmdb/", (req, res, next) => {
   return tmdb.middleware(req, res, next);
 });
 
+app.get("/v1/tmdb/fetch/movie", async (req, res) => {
+  const details = await tmdb.fetchMovieDataController(req);
+  res.send();
+});
+
 app.get("/v1/tmdb/details", async (req, res) => {
   const details = await tmdb.detailsController(req);
   res.send();
