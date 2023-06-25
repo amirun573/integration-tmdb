@@ -133,7 +133,12 @@ class TMDBService {
   }
 
   async movieItems(body) {
-    return movieService.movieList(body);
+    try {
+      return movieService.movieList(body);
+
+    } catch (error) {
+      return error;
+    }
   }
 }
 
