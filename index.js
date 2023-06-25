@@ -24,6 +24,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.post("/v1/tmdb/signup", async (req, res) => {
+  const auth = await tmdb.signUpController(req);
+
+  return res.status(auth.statusCode).json(auth).send();
+});
+
 app.post("/v1/tmdb/login", async (req, res) => {
   const auth = await tmdb.loginController(req);
 
