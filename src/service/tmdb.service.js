@@ -1,5 +1,7 @@
 const axios = require("axios");
-const { response } = require("express");
+const {
+  response
+} = require("express");
 const AuthService = require("./auth.service");
 const UserService = require("./user.service");
 const MovieService = require("./movie.service");
@@ -23,21 +25,30 @@ class TMDBService {
   constructor() {}
 
   async loginService(token) {
-    const user = await userService.findUserByToken(token);
 
-    if (!user) {
-      statusService.statusCode = 400;
-      statusService.status = false;
-      statusService.messgae = "User Not Found";
-      throw statusService;
+    try {
+      const user = await userService.findUserByToken(token);
+
+
+      if (!user) {
+        // statusService.statusCode = 400;
+        // statusService.status = false;
+        // statusService.messgae = "User Not Found";
+        throw false;
+      }
+
+
+      const payload = {
+        token: user.dataValues.token,
+      };
+
+      return await authService.generateAccessToken(payload);
+
+
+    } catch (error) {
+      return error;
     }
 
-    const payload = {
-      token: user.dataValues.token,
-    };
-
-    response.accessToken = await authService.generateAccessToken(payload);
-    return response;
   }
 
   async detailsService(req, res) {}
@@ -63,7 +74,9 @@ class TMDBService {
     for (let i = 1; i <= 300; i++) {
       console.log("BATCH==>", i);
       const save = await axios
-        .get(url + i.toString(), { headers })
+        .get(url + i.toString(), {
+          headers
+        })
         .then(async (response) => {
           const results = response.data.results;
           await this.sleep(5000);
@@ -87,7 +100,10 @@ class TMDBService {
               }
               const buffer = response.data;
 
-              imagePath = await awsService.saveImage({ fileName, buffer });
+              imagePath = await awsService.saveImage({
+                fileName,
+                buffer
+              });
 
               movie.movieTitle = result.title;
               movie.description = result.overview;

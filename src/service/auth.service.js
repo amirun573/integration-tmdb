@@ -1,5 +1,10 @@
 const jwt = require("jsonwebtoken");
 const { split } = require("lodash");
+
+const UserService = require("./user.service");
+const User = require("../../models/user");
+const userService = new UserService();
+
 class AuthService {
   constructor() {}
 
@@ -39,6 +44,10 @@ class AuthService {
     } catch (error) {
       return error;
     }
+  }
+
+  async signUp(body){
+    return User.create(body);
   }
 }
 

@@ -4,11 +4,17 @@ class UserService {
   constructor() {}
 
   async findUserByToken(token) {
-    return await User.findOne({
-      where: {
-        token,
-      },
-    });
+    try {
+      return await User.findOne({
+        where: {
+          token,
+        },
+      });
+    } catch (error) {
+      console.log("Error==>",error);
+      return error;
+    }
+    
   }
 }
 
