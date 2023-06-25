@@ -108,10 +108,9 @@ class TMDBController {
 
       const user = await tmdb.loginService(token);
 
-      console.log("USer==>", user);
       if (!user) {
         response.statusCode = 400;
-        response.message = user.message;
+        response.message = "User Not Found";
         throw response;
       }
       response.accessToken = user;
@@ -141,7 +140,7 @@ class TMDBController {
 
       if (!items) {
         response.statusCode = 400;
-        response.message = error.message;
+        response.message = "No Data.";
         throw response;
       }
 
