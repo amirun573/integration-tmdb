@@ -12,7 +12,8 @@ class MovieService {
   }
 
   async movieList(body) {
-    const limit = parseInt(body.limit) || 10;
+    try {
+      const limit = parseInt(body.limit) || 10;
     const offset = (parseInt(body.page) - 1) * limit || 0;
 
     // Query the database with pagination options
@@ -20,6 +21,11 @@ class MovieService {
       limit,
       offset,
     });
+    } catch (error) {
+      console.log("Error==>",error);
+      return error;
+    }
+    
   }
 
   async saveMovieBulk(body) {

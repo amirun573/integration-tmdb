@@ -71,7 +71,7 @@ class TMDBService {
 
     let saveMovie = [];
 
-    for (let i = 1; i <= 300; i++) {
+    for (let i = 1; i <= 100; i++) {
       console.log("BATCH==>", i);
       const save = await axios
         .get(url + i.toString(), {
@@ -133,7 +133,12 @@ class TMDBService {
   }
 
   async movieItems(body) {
-    return movieService.movieList(body);
+    try {
+      return movieService.movieList(body);
+
+    } catch (error) {
+      return error;
+    }
   }
 }
 
