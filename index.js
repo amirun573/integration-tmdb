@@ -9,7 +9,16 @@ require("dotenv").config();
 const tmdb = new tmdbController();
 // Parse JSON bodies
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use('/public', express.static('public'))
+
+
+// Define a route handler for generating temporary URL link
+app.get('/public/movies/:filename', (req, res) => {
+  const fileName = req.params.filename;
+  const imagePath = path.join(__dirname, 'public', fileName);
+
+  res.sendFile(imagePath);
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -30,6 +39,11 @@ app.use("/v1/tmdb/", (req, res, next) => {
 app.get("/v1/tmdb/fetch/movie", async (req, res) => {
   const details = await tmdb.fetchMovieDataController(req);
   res.send();
+});
+
+app.get("/v1/tmdb/items", async (req, res) => {
+  const items = await tmdb.itemsController(req);
+  return res.status(items.statusCode).json(items).send();
 });
 
 app.get("/v1/tmdb/details", async (req, res) => {

@@ -2,6 +2,7 @@ const axios = require("axios");
 const { response } = require("express");
 const AuthService = require("./auth.service");
 const UserService = require("./user.service");
+const MovieService = require("./movie.service");
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
@@ -11,6 +12,7 @@ const tmdbUrl = "https://api.themoviedb.org/3/";
 const authService = new AuthService();
 const userService = new UserService();
 const awsService = new AWSService();
+const movieService = new MovieService();
 
 const statusService = {
   statusCode: 200,
@@ -40,7 +42,7 @@ class TMDBService {
 
   async detailsService(req, res) {}
 
-  async fetchData() {
+  async fetchData(req) {
     const baseImageTMDBUrl = "https://image.tmdb.org/t/p/w220_and_h330_face";
     const url = tmdbUrl + "movie/top_rated?&page=";
     const headers = {
@@ -56,44 +58,44 @@ class TMDBService {
       saveImagePath: null,
     };
 
-    const saveMovie = [];
+    let saveMovie = [];
 
-    for (let i = 1; i <= 1; i++) {
-      await axios
+    for (let i = 1; i <= 300; i++) {
+      console.log("BATCH==>", i);
+      const save = await axios
         .get(url + i.toString(), { headers })
-        .then((response) => {
+        .then(async (response) => {
           const results = response.data.results;
+          await this.sleep(5000);
 
-          Promise.all(
+          return await Promise.all(
             results.map(async (result) => {
+              const movie = {}; // Create a new movie object for each iteration
+
               const imageUrl = baseImageTMDBUrl + result.poster_path; // Replace with the actual URL of the image
 
-              const fileName = result.poster_path.toString().replace("/","");
+              const fileName = result.poster_path.toString().replace("/", "");
 
-              var config = {
-                method: "get",
-                url: imageUrl,
-                headers: {},
-              };
+              let imagePath = null;
 
-              await axios(config)
-                .then(async function (response) {
-                  let buffer = JSON.stringify(response.data);
+              const response = await axios.get(imageUrl, {
+                responseType: "arraybuffer",
+              });
 
-                  const s3 = await awsService.saveImage({ fileName, buffer });
+              if (!response.data) {
+                next();
+              }
+              const buffer = response.data;
 
-                  console.log("S3==>", s3)
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-
+              imagePath = await awsService.saveImage({ fileName, buffer });
 
               movie.movieTitle = result.title;
               movie.description = result.overview;
               movie.fileName = result.poster_path;
+              movie.originalImagePath = imageUrl;
+              movie.saveImagePath = req.headers.host + "/" + imagePath;
 
-              saveMovie.push(movie);
+              return movie;
             })
           );
         })
@@ -103,9 +105,19 @@ class TMDBService {
             message: "Not Authenticated.",
           };
         });
+
+      saveMovie = saveMovie.concat(save);
     }
 
-    console.log(saveMovie.length);
+    return await movieService.saveMovieBulk(saveMovie);
+  }
+
+  async sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async movieItems(body) {
+    return movieService.movieList(body);
   }
 }
 

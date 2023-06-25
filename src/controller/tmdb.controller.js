@@ -44,12 +44,33 @@ class TMDBController {
   }
 
   async fetchMovieDataController(req, res) {
-    return await tmdb.fetchData();
+    return await tmdb.fetchData(req);
   }
 
   async detailsController(req, res) {
     return await tmdb.detailsService();
   }
+
+  async itemsController(req, res) {
+    try {
+      const items = await tmdb.movieItems(req.query);
+
+      if(!items){
+        response.statusCode = 400;
+        response.message = error.message;
+        throw response;
+      }
+  
+      response.data = items;
+      return response;
+    } catch (error) {
+      return error;
+    }
+
+  
+  }
+
+
 }
 
 module.exports = TMDBController;

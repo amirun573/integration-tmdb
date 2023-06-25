@@ -45,16 +45,29 @@ class AWSService {
   async saveImage(body) {
     const { fileName, buffer } = body;
 
+    return await this.saveImages(`public/movies/${fileName}`, buffer);
+
     // Save the image buffer to the server
-    fs.writeFile(`public/movies/${fileName}`, buffer, (err) => {
-      if (err) {
-        console.error("Error saving image:", err);
-        return false;
-      } else {
-        console.log("Image saved successfully");
-        return true;
-      }
-    });
+    // const status = fs.writeFile(`public/movies/${fileName}`, buffer, (err) => {
+    //   if (err) {
+    //     console.error("Error saving image:", err);
+    //     return false;
+    //   } else {
+    //     console.log("Image saved successfully");
+    //     return true;
+    //   }
+    // });
+  }
+
+  // Function to save the image buffer
+  async saveImages(filePath, imageBuffer) {
+    try {
+      fs.writeFileSync(filePath, imageBuffer);
+      return filePath; // Return true if the file is saved successfully
+    } catch (err) {
+      console.error("Error saving image:", err);
+      return false; // Return false if there is an error
+    }
   }
 }
 module.exports = AWSService;
