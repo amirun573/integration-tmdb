@@ -1,3 +1,5 @@
+"use strict";
+
 const { Sequelize, Model, DataTypes } = require("sequelize");
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config/config.json")[env];
@@ -12,15 +14,19 @@ const sequelize = new Sequelize(
   }
 );
 
-class User extends Model {}
-User.init(
+class Movie extends Model {}
+Movie.init(
   {
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    token: DataTypes.STRING,
+    movieTitle: DataTypes.STRING,
+    description: DataTypes.STRING,
+    fileName: DataTypes.STRING,
+    originalImagePath: DataTypes.STRING,
+    saveImagePath: DataTypes.STRING,
   },
-  { sequelize, modelName: "user" }
+  { sequelize, modelName: "movie" }
 );
+
+
 
 // Perform the database connection
 sequelize
@@ -32,4 +38,4 @@ sequelize
     console.error("Unable to connect to the database:", error);
   });
 
-module.exports = User;
+module.exports = Movie;
