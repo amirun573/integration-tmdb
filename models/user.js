@@ -19,7 +19,7 @@ User.init(
     email: DataTypes.STRING,
     token: DataTypes.STRING,
   },
-  { sequelize, modelName: "user" }
+  { sequelize, modelName: "user" ,tableName:'users'}
 );
 
 // Perform the database connection
